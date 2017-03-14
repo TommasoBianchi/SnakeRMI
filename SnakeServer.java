@@ -29,7 +29,7 @@ public class SnakeServer {
             worldController = new WorldController(worldWidth, worldHeight);
             RemoteWorld remoteWorld = (RemoteWorld)UnicastRemoteObject.exportObject(worldController, 0);
 
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.createRegistry(1099);
             registry.bind("RemoteWorld", remoteWorld);
 
             System.out.println("Server ready");

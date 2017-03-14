@@ -13,9 +13,7 @@ public class WorldController implements RemoteWorld {
   private ArrayList<RemotePlayer> players = new ArrayList<RemotePlayer>();
  	private boolean isRunning;
 
- 	private double probabilityToSpawnFruit = 0.05;
  	private int fruitAmount = 0;
- 	private int maxFruitSpawned = 3;
 
  	public WorldController(int rowCount, int colCount){
  		this.rowCount = rowCount;
@@ -53,11 +51,14 @@ public class WorldController implements RemoteWorld {
   	    	fruitAmount--;
   	     	world[snakeHead.getX()][snakeHead.getY()] = CellState.EMPTY;
   	  	}
+        else if(world[snakeHead.getX()][snakeHead.getY()] == CellState.SNAKE){
+          snake.die();
+        }
 
   	  	for(Point p : snake.getPoints())
   	  		world[p.getX()][p.getY()] = CellState.SNAKE;
 
-  	  	if(fruitAmount < maxFruitSpawned && Math.random() < probabilityToSpawnFruit){
+  	  	if(Math.random() < probabilityToSpawnFruit()){
   	  		int randX = (int)(Math.random() * rowCount);
   	  		int randY = (int)(Math.random() * colCount);
   	  		if(world[randX][randY] == CellState.EMPTY){
@@ -65,13 +66,19 @@ public class WorldController implements RemoteWorld {
   	  			fruitAmount++;
   	  		}
   	  	}
+      }
 
-  	  	if(snake.isAlive() == false){
-  	  		removePlayer(i);
-  	  	}
+      for(int i = 0; i < snakes.size(); i++){
+        if(snakes.get(i) != null && snakes.get(i).isAlive() == false){
+          removePlayer(i);
+        }
       }
 		}      
  	}
+
+  private double probabilityToSpawnFruit(){
+    return 0.5 / ((fruitAmount + 1) * (fruitAmount + 1));
+  }
 
  	public boolean isRunning(){
  		return isRunning;
@@ -92,6 +99,7 @@ public class WorldController implements RemoteWorld {
 
   public void sendKeypress(KeyEvent event, int playerID) {
     SnakeController snake = snakes.get(playerID);
+    if(snake == null) return;
     switch (event.getCode()) {
       case UP:
       case W:    

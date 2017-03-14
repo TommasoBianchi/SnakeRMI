@@ -30,10 +30,6 @@ public class SnakeController {
 			nextHeadY = maxY;
 		points.set(0, new Point(nextHeadX, nextHeadY));
 		justEat = false;
-
-		if(points.lastIndexOf(points.get(0)) > 0){
-			isAlive = false;
-		}
 	}
 
 	public ArrayList<Point> getPoints(){
@@ -57,6 +53,10 @@ public class SnakeController {
 		Point tail = getTail();
 		points.add(new Point(tail.getX(), tail.getY()));
 		justEat = true;
+	}
+
+	public void die(){
+		isAlive = false;
 	}
 
 	public boolean isAlive(){
